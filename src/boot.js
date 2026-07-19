@@ -60,10 +60,10 @@ BasicGame.Boot.prototype = {
       //this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
       //this.scale.setMinMax(480, 260, 1024, 768);
 		this.scale.scaleMode = Phaser.ScaleManager.USER_SCALE;
+        this.scale.compatibility.canExpandParent = false;
 		this.scale.setResizeCallback(this.resizeGame, this);
     	//this.scale.pageAlignHorizontally = true;
     	//this.scale.pageAlignVertically = true;
-			this.scale.refresh();
     } else {
       //  Same goes for mobile settings.
       //  In this case we're saying "scale the game, no lower than 480x260 and no higher than 1024x768"
@@ -73,6 +73,7 @@ BasicGame.Boot.prototype = {
     }
     this.scale.pageAlignHorizontally = true;
     this.scale.pageAlignVertically = true;
+	this.scale.refresh();
   },
 
   preload: function () {
@@ -91,14 +92,29 @@ BasicGame.Boot.prototype = {
   },
 
   resizeGame: function (scaleManager, parentBounds) {
-    var scaleAmount = parentBounds.height / game.height;
 
+    /*
+     * Calculate one uniform scale value based on height.
+     *
+     * Example:
+     * Original game height: 720
+     * Available height:     900
+     * Scale amount:         900 / 720 = 1.25
+     */
+    var scaleAmount =
+      parentBounds.height / this.game.height;
+
+    /*
+     * Use the same amount for X and Y so the game
+     * keeps its original proportions.
+     */
     scaleManager.setUserScale(
-        scaleAmount,
-        scaleAmount,
-        0,
-        0
+      scaleAmount,
+      scaleAmount,
+      0,
+      0
     );
+
   }
 
 };
