@@ -1,12 +1,12 @@
-//Game Logic Object
-BasicGame.Game = function(game) {
+//Game Logic Object - Stage 2
+BasicGame.Game2 = function(game) {
 
 };
 
-BasicGame.Game.prototype = {
+BasicGame.Game2.prototype = {
 
   init: function (config) {
-    this.config = config || BasicGame.STAGE1_CONFIG;
+    this.config = config || BasicGame.STAGE2_CONFIG;
   },
 
   create: function () { 
@@ -295,16 +295,7 @@ BasicGame.Game.prototype = {
 		    this.shooterPool.destroy();         
 		    this.bossPool.destroy();         
 		    this.enemyBulletPool.destroy();         
-		    if (this.config.nextState) {
-		      this.music.stop();
-		      this.bossMusic.stop();
-		      this.game.score = this.score;
-		      this.game.lives = this.lives.countLiving();
-		      this.game.weaponLevel = this.weaponLevel;
-		      this.state.start(this.config.nextState, true, false, BasicGame.STAGE2_CONFIG);
-		    } else {
-		      this.displayEnd(true);
-		    }
+		    this.displayEnd(true);
       }
     } 
 	},
