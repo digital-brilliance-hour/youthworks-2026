@@ -37,8 +37,13 @@ BasicGame.MainMenu.prototype = {
     //  Ok, the Play Button has been clicked or touched, so let's stop the music (otherwise it'll carry on playing)
     // this.music.stop();
 
+    //  Initialize persistent game state
+    this.game.score = 0;
+    this.game.lives = BasicGame.PLAYER_EXTRA_LIVES;
+    this.game.weaponLevel = 0;
+
     //  And start the actual game
-    this.state.start('Game');
+    this.state.start('Game', true, false, BasicGame.STAGE1_CONFIG);
 
   }
 
