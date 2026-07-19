@@ -57,8 +57,12 @@ BasicGame.Boot.prototype = {
 
     if (this.game.device.desktop) {
       //  If you have any desktop specific settings, they can go in here
-      this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+      //this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
       //this.scale.setMinMax(480, 260, 1024, 768);
+		this.scale.scaleMode = Phaser.ScaleManager.USER_SCALE;
+		this.scale.setResizeCallback(this.resizeGame, this);
+    	//this.scale.pageAlignHorizontally = true;
+    	//this.scale.pageAlignVertically = true;
 			this.scale.refresh();
     } else {
       //  Same goes for mobile settings.
@@ -84,6 +88,17 @@ BasicGame.Boot.prototype = {
     //  So now let's start the real preloader going
     this.state.start('Preloader');
 
+  },
+
+  function resizeGame(scaleManager, parentBounds) {
+    var scaleAmount = parentBounds.height / game.height;
+
+    scaleManager.setUserScale(
+        scaleAmount,
+        scaleAmount,
+        0,
+        0
+    );
   }
 
 };
