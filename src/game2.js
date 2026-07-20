@@ -19,7 +19,8 @@ BasicGame.Game2.prototype = {
 	this.setupText(); 
     this.setupAudio();
 
-	this.cursors = this.input.keyboard.createCursorKeys(); 
+	this.cursors = this.input.keyboard.createCursorKeys();
+	this.playerControl = true;
   },
   
   // 
@@ -133,7 +134,8 @@ BasicGame.Game2.prototype = {
   this.music.play();
 },
 
-  processPlayerInput: function () { 
+  processPlayerInput: function () {
+    if (!this.playerControl) { return; }
     this.player.body.velocity.x = 0; 
     this.player.body.velocity.y = 0; 
 
@@ -295,7 +297,7 @@ BasicGame.Game2.prototype = {
 		    this.shooterPool.destroy();         
 		    this.bossPool.destroy();         
 		    this.enemyBulletPool.destroy();         
-		    this.displayEnd(true);
+		    this.stageComplete();
       }
     } 
 	},
@@ -540,6 +542,35 @@ BasicGame.Game2.prototype = {
     { font: '20px monospace', fill: '#fff', align: 'center' }     
     );     
     this.scoreText.anchor.setTo(0.5, 0.5);
+  },
+
+  stageComplete: function () {
+    // Disable player input
+    this.playerControl = false;
+    this.bossMusic.stop();
+
+    // Back down slowly
+    this.player.body.velocity.x = 0;
+    this.player.body.velocity.y = 100;
+
+    // After 1 second, accelerate upward off screen
+    this.time.events.add(Phaser.Timer.SECOND, function () {
+      this.player.body.collideWorldBounds = false;
+      this.add.tween(this.player.body.velocity).to(
+        { y: -800 }, 1500, Phaser.Easing.Quadratic.In, true
+      );
+    }, this);
+
+    // After takeoff, fade to black
+    this.time.events.add(Phaser.Timer.SECOND * 2.5, function () {
+      this.camera.fade(0x000000, 1000);
+    }, this);
+
+    // After fade completes, show win screen
+    this.camera.onFadeComplete.addOnce(function () {
+      this.camera.flash(0x000000, 1);
+      this.displayEnd(true);
+    }, this);
   },
   
   displayEnd: function (win) { 

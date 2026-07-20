@@ -19,7 +19,8 @@ BasicGame.Game.prototype = {
 	this.setupText(); 
     this.setupAudio();
 
-	this.cursors = this.input.keyboard.createCursorKeys(); 
+	this.cursors = this.input.keyboard.createCursorKeys();
+	this.playerControl = true;
   },
   
   // 
@@ -133,7 +134,8 @@ BasicGame.Game.prototype = {
   this.music.play();
 },
 
-  processPlayerInput: function () { 
+  processPlayerInput: function () {
+    if (!this.playerControl) { return; }
     this.player.body.velocity.x = 0; 
     this.player.body.velocity.y = 0; 
 
@@ -296,12 +298,7 @@ BasicGame.Game.prototype = {
 		    this.bossPool.destroy();         
 		    this.enemyBulletPool.destroy();         
 		    if (this.config.nextState) {
-		      this.music.stop();
-		      this.bossMusic.stop();
-		      this.game.score = this.score;
-		      this.game.lives = this.lives.countLiving();
-		      this.game.weaponLevel = this.weaponLevel;
-		      this.state.start(this.config.nextState, true, false, BasicGame.STAGE2_CONFIG);
+		      this.stageComplete();
 		    } else {
 		      this.displayEnd(true);
 		    }
@@ -551,6 +548,38 @@ BasicGame.Game.prototype = {
     this.scoreText.anchor.setTo(0.5, 0.5);
   },
   
+  stageComplete: function () {
+    // Disable player input
+    this.playerControl = false;
+    this.bossMusic.stop();
+
+    // Back down slowly
+    this.player.body.velocity.x = 0;
+    this.player.body.velocity.y = 100;
+
+    // After 1 second, accelerate upward off screen
+    this.time.events.add(Phaser.Timer.SECOND, function () {
+      this.player.body.collideWorldBounds = false;
+      this.add.tween(this.player.body.velocity).to(
+        { y: -800 }, 1500, Phaser.Easing.Quadratic.In, true
+      );
+    }, this);
+
+    // After takeoff, fade to black
+    this.time.events.add(Phaser.Timer.SECOND * 2.5, function () {
+      this.camera.fade(0x000000, 1000);
+    }, this);
+
+    // After fade completes, transition to next stage
+    this.camera.onFadeComplete.addOnce(function () {
+      this.music.stop();
+      this.game.score = this.score;
+      this.game.lives = this.lives.countLiving();
+      this.game.weaponLevel = this.weaponLevel;
+      this.state.start(this.config.nextState, true, false, BasicGame.STAGE2_CONFIG);
+    }, this);
+  },
+
   displayEnd: function (win) { 
 	// you can't win and lose at the same time 
 	if (this.endText && this.endText.exists) { 
