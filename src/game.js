@@ -81,7 +81,7 @@ BasicGame.Game.prototype = {
 	var livesCount = (this.game.lives !== undefined) ? this.game.lives : BasicGame.PLAYER_EXTRA_LIVES;
 	var firstLifeIconX = this.game.width - 10 - (livesCount * 30); 
 	for (var i = 0; i < livesCount; i++) { 
-		var life = this.lives.create(firstLifeIconX + (30 * i), 30, this.config.playerKey); 
+		var life = this.lives.create(firstLifeIconX + (30 * i), 30, this.config.player.key); 
 		life.scale.setTo(0.5, 0.5); 
 		life.anchor.setTo(0.5, 0.5); 
 	} 
@@ -173,7 +173,9 @@ BasicGame.Game.prototype = {
     
     if (this.ghostUntil && this.ghostUntil < this.time.now) {       
       this.ghostUntil = null;       
-      this.player.play('fly');     
+      if (this.config.player.animated) {
+        this.player.play(this.config.player.defaultAnimation);
+      }     
 		}
     
     if (this.showReturn && this.time.now > this.showReturn) {       
@@ -292,7 +294,7 @@ BasicGame.Game.prototype = {
     this.addToScore(enemy.reward);
     // We check the sprite key (e.g. 'greenEnemy') to see if the sprite is a boss       
 	    // For full games, it would be better to set flags on the sprites themselves       
-	    if (enemy.key === this.config.bossKey) {         
+	    if (enemy.key === this.config.boss.key) {         
 		    this.enemyPool.destroy();         
 		    this.shooterPool.destroy();         
 		    this.bossPool.destroy();         
@@ -402,24 +404,31 @@ BasicGame.Game.prototype = {
   },  
 
   setupPlayer: function () {  
-    this.player = this.add.sprite(this.game.width / 2, this.game.height - 50, this.config.playerKey);  
+    var cfg = this.config.player;
+    this.player = this.add.sprite(this.game.width / 2, this.game.height - 50, cfg.key);  
     this.player.anchor.setTo(0.5, 0.5);  
-    this.player.animations.add('fly', [ 0, 1, 2 ], 20, true); 
-    this.player.animations.add('ghost', [ 3, 0, 3, 1 ], 20, true);
-    this.player.play('fly');  
+    if (cfg.animated) {
+      for (var i = 0; i < cfg.animations.length; i++) {
+        var anim = cfg.animations[i];
+        this.player.animations.add(anim.name, anim.frames, anim.fps, anim.loop);
+      }
+      this.player.play(cfg.defaultAnimation);
+    }
     this.physics.enable(this.player, Phaser.Physics.ARCADE);  
     this.player.speed = BasicGame.PLAYER_SPEED;  
     this.player.body.collideWorldBounds = true;  
-    // 20 x 20 pixel hitbox, centered a little bit higher than the center  
-    this.player.body.setSize(20, 20, 0, -5); 
+    if (cfg.hitbox) {
+      this.player.body.setSize(cfg.hitbox.width, cfg.hitbox.height, cfg.hitbox.offsetX, cfg.hitbox.offsetY);
+    }
     this.weaponLevel = this.game.weaponLevel || 0;
   },  
 
   setupEnemies: function () { 
+    var eCfg = this.config.enemy;
     this.enemyPool = this.add.group(); 
     this.enemyPool.enableBody = true; 
     this.enemyPool.physicsBodyType = Phaser.Physics.ARCADE; 
-    this.enemyPool.createMultiple(50, this.config.enemyKey); 
+    this.enemyPool.createMultiple(50, eCfg.key); 
     this.enemyPool.setAll('anchor.x', 0.5); 
     this.enemyPool.setAll('anchor.y', 0.5); 
     this.enemyPool.setAll('outOfBoundsKill', true); 
@@ -429,20 +438,25 @@ BasicGame.Game.prototype = {
 
     // Set the animation for each sprite 
     this.enemyPool.forEach(function (enemy) { 
-      enemy.animations.add('fly', [ 0, 1, 2 ], 20, true);
-      enemy.animations.add('hit', [ 3, 1, 3, 2 ], 20, false);       
-      enemy.events.onAnimationComplete.add( function (e) {         
-      e.play('fly');       
-      }, this);
-    }); 
+      if (eCfg.animated) {
+        for (var i = 0; i < eCfg.animations.length; i++) {
+          var anim = eCfg.animations[i];
+          enemy.animations.add(anim.name, anim.frames, anim.fps, anim.loop);
+        }
+        enemy.events.onAnimationComplete.add(function (e) {
+          e.play(eCfg.defaultAnimation);
+        }, this);
+      }
+    }, this); 
 
     this.nextEnemyAt = 0; 
     this.enemyDelay = BasicGame.SPAWN_ENEMY_DELAY; 
     
+    var sCfg = this.config.shooter;
     this.shooterPool = this.add.group();     
   	this.shooterPool.enableBody = true;     
   	this.shooterPool.physicsBodyType = Phaser.Physics.ARCADE;     
-  	this.shooterPool.createMultiple(20, this.config.shooterKey);     
+  	this.shooterPool.createMultiple(20, sCfg.key);     
   	this.shooterPool.setAll('anchor.x', 0.5);     
   	this.shooterPool.setAll('anchor.y', 0.5);     
   	this.shooterPool.setAll('outOfBoundsKill', true);     
@@ -451,20 +465,25 @@ BasicGame.Game.prototype = {
     this.shooterPool.setAll('dropRate', BasicGame.SHOOTER_DROP_RATE, false, false, 0, true);
   	// Set the animation for each sprite     
   	this.shooterPool.forEach(function (enemy) {       
-	  	enemy.animations.add('fly', [ 0, 1, 2 ], 20, true);       
-	  	enemy.animations.add('hit', [ 3, 1, 3, 2 ], 20, false);       
-	  	enemy.events.onAnimationComplete.add( function (e) {         
-		  	e.play('fly');       
-		}, this);     
-	});      
+	  	if (sCfg.animated) {
+        for (var i = 0; i < sCfg.animations.length; i++) {
+          var anim = sCfg.animations[i];
+          enemy.animations.add(anim.name, anim.frames, anim.fps, anim.loop);
+        }
+        enemy.events.onAnimationComplete.add(function (e) {
+          e.play(sCfg.defaultAnimation);
+        }, this);
+      }
+	}, this);      
     // start spawning 5 seconds into the game     
     this.nextShooterAt = this.time.now + Phaser.Timer.SECOND * 5;     
     this.shooterDelay = BasicGame.SPAWN_SHOOTER_DELAY;
     
+    var bCfg = this.config.boss;
     this.bossPool = this.add.group();     
   	this.bossPool.enableBody = true;     
   	this.bossPool.physicsBodyType = Phaser.Physics.ARCADE;     
-  	this.bossPool.createMultiple(1, this.config.bossKey);     
+  	this.bossPool.createMultiple(1, bCfg.key);     
   	this.bossPool.setAll('anchor.x', 0.5);     
   	this.bossPool.setAll('anchor.y', 0.5);     
   	this.bossPool.setAll('outOfBoundsKill', true);     
@@ -475,12 +494,16 @@ BasicGame.Game.prototype = {
   	);      
   	// Set the animation for each sprite     
   	this.bossPool.forEach(function (enemy) {       
-	  	enemy.animations.add('fly', [ 0, 1, 2 ], 20, true);       
-	  	enemy.animations.add('hit', [ 3, 1, 3, 2 ], 20, false);       
-	  	enemy.events.onAnimationComplete.add( function (e) {         
-	  		e.play('fly');       
-	    }, this);     
-    });      
+	  	if (bCfg.animated) {
+        for (var i = 0; i < bCfg.animations.length; i++) {
+          var anim = bCfg.animations[i];
+          enemy.animations.add(anim.name, anim.frames, anim.fps, anim.loop);
+        }
+        enemy.events.onAnimationComplete.add(function (e) {
+          e.play(bCfg.defaultAnimation);
+        }, this);
+      }
+    }, this);      
     this.boss = this.bossPool.getTop();     
     this.bossApproaching = false;
   }, 
