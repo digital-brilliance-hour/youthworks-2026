@@ -37,7 +37,7 @@ BasicGame.Preloader.prototype = {
     this.load.spritesheet('whiteEnemy', 'assets/shooting-enemy.png', 32, 32);
     this.load.spritesheet('boss', 'assets/boss.png', 93, 75);
     this.load.spritesheet('explosion', 'assets/explosion.png', 32, 32);
-    this.load.spritesheet('ship-P', 'assets/ship-P.png', 64, 64);
+    this.load.spritesheet('ship-P', 'assets/ship-P.png', 29, 32);
     this.load.spritesheet('player', 'assets/player.png', 64, 64);
     this.load.spritesheet('explosion3' , 'assets/explosion3-sheet62x64.png' , 62, 64);
     this.load.spritesheet('explosion2' , 'assets/explosion2-sheet39x40.png', 39, 40);

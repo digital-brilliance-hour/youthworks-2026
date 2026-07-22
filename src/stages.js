@@ -7,15 +7,20 @@ BasicGame.STAGE1_CONFIG = {
 
   // Player
   player: {
-    key: 'player',
+    key: 'ship-P',
     animated: true,
     animations: [
-      { name: 'fly', frames: [0, 1, 2], fps: 20, loop: true },
-      { name: 'ghost', frames: [3, 0, 3, 1], fps: 20, loop: true }
+      { name: 'fly', frames: [2], fps: 20, loop: true },
+      { name: 'ghost', frames: [3, 0, 3, 1], fps: 20, loop: true },
+       { name: 'leanLeft', frames: [0, 1], fps: 20, loop: true },
+    { name: 'leanRight', frames: [3, 4], fps: 20, loop: true },
     ],
     defaultAnimation: 'fly',
+    leanLeft: 'leanLeft',
+  leanRight: 'leanRight',
     hitbox: { width: 20, height: 20, offsetX: 0, offsetY: -5 }
   },
+
 
   // Basic enemy
   enemy: {
