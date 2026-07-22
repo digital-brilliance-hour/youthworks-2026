@@ -343,8 +343,10 @@ BasicGame.Game.prototype = {
     if (life !== null) {       
       life.kill(); 
       this.weaponLevel = 0;
-      this.ghostUntil = this.time.now + BasicGame.PLAYER_GHOST_TIME;       
-      this.player.play('ghost');     
+      this.ghostUntil = this.time.now + BasicGame.PLAYER_GHOST_TIME;
+      if (this.player.animations.getAnimation('ghost')) {
+        this.player.play('ghost');
+      }     
     } else {       
       this.explode(player);       
       player.kill();
