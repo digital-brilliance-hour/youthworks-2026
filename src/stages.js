@@ -1,8 +1,10 @@
 BasicGame.STAGE1_CONFIG = {
   // Background
   background: {
-    key: 'sea',
-    type: 'tile'
+    key: 'stage1-back.png',
+    type: 'image',
+    scrollSpeed: '12',
+    loop: 'false'
   },
 
   // Player

@@ -58,7 +58,7 @@ BasicGame.Preloader.prototype = {
   
     this.load.spritesheet('Boss1Bullet','assets/Boss1Bullet.png', 13,13);
     this.load.image('bg1','assets/stage1-back.png');
-    this.load.image('bg1','assets/stage2-back.png');
+    this.load.image('bg2','assets/stage2-back.png');
 
   },
 
