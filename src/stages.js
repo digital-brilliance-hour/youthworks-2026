@@ -23,7 +23,6 @@ BasicGame.STAGE1_CONFIG = {
     animated: true,
     animations: [
       { name: 'fly', frames: [0, 1, 2], fps: 20, loop: true },
-      { name: 'hit', frames: [3, 1, 3, 2], fps: 20, loop: false }
     ],
     defaultAnimation: 'fly'
   },
@@ -31,12 +30,7 @@ BasicGame.STAGE1_CONFIG = {
   // Shooting enemy
   shooter: {
     key: 'whiteEnemy',
-    animated: true,
-    animations: [
-      { name: 'fly', frames: [0, 1, 2], fps: 20, loop: true },
-      { name: 'hit', frames: [3, 1, 3, 2], fps: 20, loop: false }
-    ],
-    defaultAnimation: 'fly'
+    animated: false,
   },
 
   // Boss
@@ -56,6 +50,20 @@ BasicGame.STAGE1_CONFIG = {
     animated: false
   },
 
+   playerBullet: {
+    key: 'player1Bullet',
+    animated: false
+  },
+
+   enemy1Bullet: {
+    key: 'enemy1Bullet',
+    animated: false
+  },
+  
+ boss1Bullet: {
+    key: 'boss1Bullet',
+    animated: false
+  },
   // Enemy bullet
   enemyBullet: {
     key: 'enemyBullet',
@@ -64,14 +72,41 @@ BasicGame.STAGE1_CONFIG = {
 
   // Explosion
   explosion: {
-    key: 'explosion',
+    key: 'shipexplosion',
     animated: true,
     animations: [
-      { name: 'boom', frames: null, fps: 15, loop: false }
+      { name: 'boom', frames: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], fps: 15, loop: false }
     ],
-    defaultAnimation: 'boom',
-    destroyOnComplete: true
+    defaultAnimation: 'boom'
   },
+    
+
+    enemy1Explosion: {
+      key: 'explosion3',
+      animated: true,
+      animations: [
+        { name: 'boom', frames: [0, 1, 2, 3, 4, 5, 6, 7, 8], fps: 15, loop: false }
+      ],
+      defaultAnimation: 'boom'
+    },
+    enemy2Explosion: {
+      key: 'explosion2',
+      animated: true,
+      animations: [
+        { name: 'boom', frames: [0, 1, 2, 3, 4, 5, 6], fps: 15, loop: false }
+      ],
+      defaultAnimation: 'boom'
+    },
+
+    bossExplosion: {
+      key: 'explosion1',
+      animated: true,
+      animations: [
+        { name: 'boom', frames: [0, 1, 2, 3, 4, 5, 6, 7], fps: 15, loop: false }
+      ],
+      defaultAnimation: 'boom'
+    },
+
 
   // Power-up
   powerUp: {
