@@ -350,8 +350,10 @@ BasicGame.Game2.prototype = {
   
   damageEnemy: function (enemy, damage) { 
 	enemy.damage(damage); 
-	if (enemy.alive) { 
-		enemy.play('hit'); 
+	if (enemy.alive) {
+		if (enemy.animations.getAnimation('hit')) {
+			enemy.play('hit');
+		}
 	} else { 
   	this.explosionSFX.play();
 		this.explode(enemy); 
@@ -396,8 +398,11 @@ BasicGame.Game2.prototype = {
   	this.bossApproaching = true; 
   	this.boss.reset(this.game.width / 2, 0, BasicGame.BOSS_HEALTH); 
   	this.physics.enable(this.boss, Phaser.Physics.ARCADE); 
-  	this.boss.body.velocity.y = BasicGame.BOSS_Y_VELOCITY; 
-  	this.boss.play('fly'); 
+  	this.boss.body.velocity.y = BasicGame.BOSS_Y_VELOCITY;
+  	var bCfg = this.config.boss;
+  	if (bCfg.animated) {
+  		this.boss.play(bCfg.defaultAnimation);
+  	}
     this.music.stop();
 		this.bossMusic.play();
 },
