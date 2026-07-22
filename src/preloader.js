@@ -37,8 +37,12 @@ BasicGame.Preloader.prototype = {
     this.load.spritesheet('explosion', 'assets/explosion.png', 32, 32);
     this.load.spritesheet('ship-P', 'assets/ship-P.png', 64, 64);
     this.load.spritesheet('player', 'assets/player.png', 64, 64);
+    this.load.spritesheet('explosion3 , assets/explosion3-sheet62x64.png' , 62, 64);
+    this.load.spritesheet('explosion2 , assets/explosion2-sheet39x40.png', 39, 40);
+    this.load.spritesheet('shipexplosion , assets/shipexplosion-sheet49x42.png , 49 , 42');
+    this.load.spritesheet('explosion1 , assets/explosion1-sheet32x32.png , 32 , 32');
     this.load.audio('explosion', ['assets/explosion.ogg', 'assets/explosion.wav']);
-    this.load.audio('playerExplosion', ['assets/player-explosion.ogg', 'assets/player-explosion.wav']);
+    this.load.audio('playerExplosion', ['assets/player-explosion.ogg', 'assets/player-explsion.wav']);
     this.load.audio('enemyFire', ['assets/enemy-fire.ogg', 'assets/enemy-fire.wav']);
     this.load.audio('playerFire', ['assets/player-fire.ogg', 'assets/player-fire.wav']);
     this.load.audio('powerUp', ['assets/powerup.ogg', 'assets/powerup.wav']);
