@@ -88,6 +88,7 @@ BasicGame.Game.prototype = {
 },
 
   spawnEnemies: function () { 
+    var eCfg = this.config.enemy;
     if (this.nextEnemyAt < this.time.now && this.enemyPool.countDead() > 0) { 
       this.nextEnemyAt = this.time.now + this.enemyDelay; 
       var enemy = this.enemyPool.getFirstExists(false); 
@@ -100,9 +101,10 @@ BasicGame.Game.prototype = {
       enemy.body.velocity.y = this.rnd.integerInRange(         
 	  	BasicGame.ENEMY_MIN_Y_VELOCITY, BasicGame.ENEMY_MAX_Y_VELOCITY       
 	  	); 
-      enemy.play('fly'); 
+      if (eCfg.animated) { enemy.play(eCfg.defaultAnimation); }
     } 
     
+    var sCfg = this.config.shooter;
     if (this.nextShooterAt < this.time.now && this.shooterPool.countDead() > 0) {       
 		this.nextShooterAt = this.time.now + this.shooterDelay;       
 		var shooter = this.shooterPool.getFirstExists(false);        
@@ -115,7 +117,16 @@ BasicGame.Game.prototype = {
 			shooter, target, this.game.height,         
 			this.rnd.integerInRange( BasicGame.SHOOTER_MIN_VELOCITY, BasicGame.SHOOTER_MAX_VELOCITY )       
 		) - Math.PI / 2;        
-		shooter.play('fly');        
+		// Lean or default animation based on horizontal velocity
+		if (sCfg.animated) {
+		  if (shooter.body.velocity.x < 0 && sCfg.leanLeft) {
+		    shooter.play(sCfg.leanLeft);
+		  } else if (shooter.body.velocity.x > 0 && sCfg.leanRight) {
+		    shooter.play(sCfg.leanRight);
+		  } else {
+		    shooter.play(sCfg.defaultAnimation);
+		  }
+		}
 		// each shooter has their own shot timer        
 		shooter.nextShotAt = 0;     
 	}
@@ -164,6 +175,18 @@ BasicGame.Game.prototype = {
 			this.fire();       
 		}   
     } 
+
+    // Lean animations based on horizontal movement
+    if (this.config.player.animated && !this.ghostUntil) {
+      var pCfg = this.config.player;
+      if (this.player.body.velocity.x < 0 && pCfg.leanLeft) {
+        this.player.play(pCfg.leanLeft);
+      } else if (this.player.body.velocity.x > 0 && pCfg.leanRight) {
+        this.player.play(pCfg.leanRight);
+      } else {
+        this.player.play(pCfg.defaultAnimation);
+      }
+    }
   }, 
 
   processDelayedEffects: function () { 
@@ -198,6 +221,18 @@ BasicGame.Game.prototype = {
 	    this.boss.body.bounce.x = 1;       
 	    this.boss.body.collideWorldBounds = true;     
 	}
+
+    // Boss lean animation based on horizontal movement
+    var bCfg = this.config.boss;
+    if (this.boss.alive && !this.bossApproaching && bCfg.animated) {
+      if (this.boss.body.velocity.x < 0 && bCfg.leanLeft) {
+        this.boss.play(bCfg.leanLeft);
+      } else if (this.boss.body.velocity.x > 0 && bCfg.leanRight) {
+        this.boss.play(bCfg.leanRight);
+      } else {
+        this.boss.play(bCfg.defaultAnimation);
+      }
+    }
   },
 
   update: function () { 
