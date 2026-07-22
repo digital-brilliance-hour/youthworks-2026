@@ -399,7 +399,7 @@ BasicGame.Game.prototype = {
 	this.score += score; 
 	this.scoreText.text = this.score; 
   // this approach prevents the boss from spawning again upon winning     
-    if (this.score >= 200 && this.bossPool.countDead() == 1) {       
+    if (this.score >= 20000 && this.bossPool.countDead() == 1) {       
     	this.spawnBoss();     
 	}
 	},
