@@ -23,7 +23,6 @@ BasicGame.STAGE1_CONFIG = {
     animated: true,
     animations: [
       { name: 'fly', frames: [0, 1, 2], fps: 20, loop: true },
-      { name: 'hit', frames: [3, 1, 3, 2], fps: 20, loop: false }
     ],
     defaultAnimation: 'fly'
   },
@@ -31,12 +30,7 @@ BasicGame.STAGE1_CONFIG = {
   // Shooting enemy
   shooter: {
     key: 'whiteEnemy',
-    animated: true,
-    animations: [
-      { name: 'fly', frames: [0, 1, 2], fps: 20, loop: true },
-      { name: 'hit', frames: [3, 1, 3, 2], fps: 20, loop: false }
-    ],
-    defaultAnimation: 'fly'
+    animated: false,
   },
 
   // Boss
