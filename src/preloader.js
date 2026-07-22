@@ -47,6 +47,9 @@ BasicGame.Preloader.prototype = {
     this.load.audio('bossMusic', ['assets/bgm/bossmusic.ogg']);
     this.load.audio('gameOverMusic', ['assets/bgm/gameovermusic.mp3']);
     //  + lots of other required assets here
+ this.load.image('playerBullet', 'asessts/playerBullet.png');
+    this.load.spritesheet('enemy1Bullet', 'asessts/enemy1Bullet.png', 13,13);
+    this.load.spritesheet('Boss1Bullet','assets/Boss1Bullet.png', 13,13);
 
   },
 

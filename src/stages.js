@@ -56,6 +56,20 @@ BasicGame.STAGE1_CONFIG = {
     animated: false
   },
 
+   playerBullet: {
+    key: 'player1Bullet',
+    animated: false
+  },
+
+   enemy1Bullet: {
+    key: 'enemy1Bullet',
+    animated: false
+  },
+  
+ boss1Bullet: {
+    key: 'boss1Bullet',
+    animated: false
+  },
   // Enemy bullet
   enemyBullet: {
     key: 'enemyBullet',
