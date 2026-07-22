@@ -28,7 +28,8 @@ BasicGame.Preloader.prototype = {
     this.load.image('sea', 'assets/sea.png');
     this.load.image('sand', 'assets/sand.png');
     this.load.image('bullet', 'assets/bullet.png');
-    this.load.image('enemyBullet', 'assets/enemy-bullet.png');
+      this.load.spritesheet('enemy1Bullet', 'asessts/enemy1Bullet.png', 13,13);
+      this.load.spritesheet('enemyBullet', 'asessts/enemy1Bullet.png', 13,13);
     this.load.image('powerup1', 'assets/powerup1.png');
     this.load.image('enemy1', 'assets/enemy1-fighter.png');
     this.load.spritesheet('enemy2', 'assets/enemy1-sheet24x31.png', 24, 31);
@@ -54,7 +55,7 @@ BasicGame.Preloader.prototype = {
     this.load.audio('gameOverMusic', ['assets/bgm/gameovermusic.mp3']);
     //  + lots of other required assets here
  this.load.image('playerBullet', 'asessts/playerBullet.png');
-    this.load.spritesheet('enemy1Bullet', 'asessts/enemy1Bullet.png', 13,13);
+  
     this.load.spritesheet('Boss1Bullet','assets/Boss1Bullet.png', 13,13);
     this.load.image('bg1','assets/stage1-back.png');
     this.load.image('bg1','assets/stage2-back.png');

@@ -55,21 +55,21 @@ BasicGame.STAGE1_CONFIG = {
     animated: false
   },
 
-   enemy1Bullet: {
-    key: 'enemy1Bullet',
-    animated: false
-  },
+ 
   
  boss1Bullet: {
     key: 'boss1Bullet',
     animated: false
   },
   // Enemy bullet
-  enemyBullet: {
-    key: 'enemyBullet',
-    animated: false
-  },
-
+ enemyBullet: {
+  key: 'enemy1Bullet',
+  animated: false,
+  animations: [
+    { name: 'fire', frames: [0, 1, 2, 3, 4, 5, 6, 7], fps: 20, loop: true }
+  ],
+  defaultAnimation: 'fire'
+},
   // Explosion
   explosion: {
     key: 'shipexplosion',
