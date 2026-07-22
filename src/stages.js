@@ -46,7 +46,7 @@ BasicGame.STAGE1_CONFIG = {
 
   // Bullet
   bullet: {
-    key: 'bullet',
+    key: 'playerBullet',
     animated: false
   },
 

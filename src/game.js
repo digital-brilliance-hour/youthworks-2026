@@ -450,6 +450,10 @@ BasicGame.Game.prototype = {
 		bullet = this.bulletPool.getFirstExists(false);       
 		bullet.reset(this.player.x, this.player.y - 20);       
 		bullet.body.velocity.y = -BasicGame.BULLET_VELOCITY;
+    this.bulletPool.forEach(function (bullet) {
+      bullet.angle = -90;
+      bullet.body.setSize(8, 32, 12, -12); // adjust to your image
+    }, this);
 		if (bCfg.animated) { bullet.play(bCfg.defaultAnimation); }
 	} else {       
 		if (this.bulletPool.countDead() < this.weaponLevel * 2) {         
@@ -474,6 +478,7 @@ BasicGame.Game.prototype = {
 			if (bCfg.animated) { bullet.play(bCfg.defaultAnimation); }
 		}     
 	} 
+  
 	},
   
   render: function() { 
