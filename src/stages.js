@@ -1,14 +1,83 @@
 BasicGame.STAGE1_CONFIG = {
-  // Sprites
-  backgroundKey: 'sea',
-  playerKey: 'player',
-  enemyKey: 'greenEnemy',
-  shooterKey: 'whiteEnemy',
-  bossKey: 'boss',
-  bulletKey: 'bullet',
-  enemyBulletKey: 'enemyBullet',
-  explosionKey: 'explosion',
-  powerUpKey: 'powerup1',
+  // Background
+  background: {
+    key: 'sea',
+    type: 'tile'
+  },
+
+  // Player
+  player: {
+    key: 'player',
+    animated: true,
+    animations: [
+      { name: 'fly', frames: [0, 1, 2], fps: 20, loop: true },
+      { name: 'ghost', frames: [3, 0, 3, 1], fps: 20, loop: true }
+    ],
+    defaultAnimation: 'fly',
+    hitbox: { width: 20, height: 20, offsetX: 0, offsetY: -5 }
+  },
+
+  // Basic enemy
+  enemy: {
+    key: 'greenEnemy',
+    animated: true,
+    animations: [
+      { name: 'fly', frames: [0, 1, 2], fps: 20, loop: true },
+      { name: 'hit', frames: [3, 1, 3, 2], fps: 20, loop: false }
+    ],
+    defaultAnimation: 'fly'
+  },
+
+  // Shooting enemy
+  shooter: {
+    key: 'whiteEnemy',
+    animated: true,
+    animations: [
+      { name: 'fly', frames: [0, 1, 2], fps: 20, loop: true },
+      { name: 'hit', frames: [3, 1, 3, 2], fps: 20, loop: false }
+    ],
+    defaultAnimation: 'fly'
+  },
+
+  // Boss
+  boss: {
+    key: 'boss',
+    animated: true,
+    animations: [
+      { name: 'fly', frames: [0, 1, 2], fps: 20, loop: true },
+      { name: 'hit', frames: [3, 1, 3, 2], fps: 20, loop: false }
+    ],
+    defaultAnimation: 'fly'
+  },
+
+  // Bullet
+  bullet: {
+    key: 'bullet',
+    animated: false
+  },
+
+  // Enemy bullet
+  enemyBullet: {
+    key: 'enemyBullet',
+    animated: false
+  },
+
+  // Explosion
+  explosion: {
+    key: 'explosion',
+    animated: true,
+    animations: [
+      { name: 'boom', frames: null, fps: 15, loop: false }
+    ],
+    defaultAnimation: 'boom',
+    destroyOnComplete: true
+  },
+
+  // Power-up
+  powerUp: {
+    key: 'powerup1',
+    animated: false
+  },
 
   // Audio
   explosionSFX: 'explosion',
@@ -25,16 +94,85 @@ BasicGame.STAGE1_CONFIG = {
 };
 
 BasicGame.STAGE2_CONFIG = {
-  // Sprites
-  backgroundKey: 'sand',
-  playerKey: 'player',
-  enemyKey: 'greenEnemy',
-  shooterKey: 'whiteEnemy',
-  bossKey: 'boss',
-  bulletKey: 'bullet',
-  enemyBulletKey: 'enemyBullet',
-  explosionKey: 'explosion',
-  powerUpKey: 'powerup1',
+  // Background
+  background: {
+    key: 'sand',
+    type: 'tile'
+  },
+
+  // Player
+  player: {
+    key: 'player',
+    animated: true,
+    animations: [
+      { name: 'fly', frames: [0, 1, 2], fps: 20, loop: true },
+      { name: 'ghost', frames: [3, 0, 3, 1], fps: 20, loop: true }
+    ],
+    defaultAnimation: 'fly',
+    hitbox: { width: 20, height: 20, offsetX: 0, offsetY: -5 }
+  },
+
+  // Basic enemy
+  enemy: {
+    key: 'greenEnemy',
+    animated: true,
+    animations: [
+      { name: 'fly', frames: [0, 1, 2], fps: 20, loop: true },
+      { name: 'hit', frames: [3, 1, 3, 2], fps: 20, loop: false }
+    ],
+    defaultAnimation: 'fly'
+  },
+
+  // Shooting enemy
+  shooter: {
+    key: 'whiteEnemy',
+    animated: true,
+    animations: [
+      { name: 'fly', frames: [0, 1, 2], fps: 20, loop: true },
+      { name: 'hit', frames: [3, 1, 3, 2], fps: 20, loop: false }
+    ],
+    defaultAnimation: 'fly'
+  },
+
+  // Boss
+  boss: {
+    key: 'boss',
+    animated: true,
+    animations: [
+      { name: 'fly', frames: [0, 1, 2], fps: 20, loop: true },
+      { name: 'hit', frames: [3, 1, 3, 2], fps: 20, loop: false }
+    ],
+    defaultAnimation: 'fly'
+  },
+
+  // Bullet
+  bullet: {
+    key: 'bullet',
+    animated: false
+  },
+
+  // Enemy bullet
+  enemyBullet: {
+    key: 'enemyBullet',
+    animated: false
+  },
+
+  // Explosion
+  explosion: {
+    key: 'explosion',
+    animated: true,
+    animations: [
+      { name: 'boom', frames: null, fps: 15, loop: false }
+    ],
+    defaultAnimation: 'boom',
+    destroyOnComplete: true
+  },
+
+  // Power-up
+  powerUp: {
+    key: 'powerup1',
+    animated: false
+  },
 
   // Audio
   explosionSFX: 'explosion',
