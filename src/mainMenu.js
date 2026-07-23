@@ -18,6 +18,10 @@ BasicGame.MainMenu.prototype = {
     this.bg.scale.setTo(scaleFactor, scaleFactor);
     this.bgScaledHeight = this.bg.texture.height * scaleFactor;
     this.bgScrollSpeed = 30; // pixels per second — adjust to taste
+
+    // Second copy stacked directly above the first for seamless looping
+    this.bg2 = this.add.image(0, -this.bgScaledHeight, 'menuBack');
+    this.bg2.scale.setTo(scaleFactor, scaleFactor);
     // this.add.sprite(0, 0, 'titlepage');
 
     this.loadingText = this.add.text(this.game.width / 2, this.game.height / 2 + 80, "Press Z or tap/click game to start", { font: "20px monospace", fill: "#fff" });
@@ -33,12 +37,17 @@ BasicGame.MainMenu.prototype = {
       this.startGame();
     }
     //  Do some nice funky main menu effect here
-    // Scroll upward
-    this.bg.y -= this.bgScrollSpeed * this.time.physicsElapsed;
+    // Scroll downward
+    this.bg.y += this.bgScrollSpeed * this.time.physicsElapsed;
+    this.bg2.y += this.bgScrollSpeed * this.time.physicsElapsed;
 
-    // When the full image has scrolled past, loop back to the top
-    if (this.bg.y <= -(this.bgScaledHeight - this.game.height)) {
-      this.bg.y = 0;
+    // When the first image scrolls fully below the screen, jump it back above the second
+    if (this.bg.y >= this.bgScaledHeight) {
+      this.bg.y = this.bg2.y - this.bgScaledHeight;
+    }
+    // When the second image scrolls fully below the screen, jump it back above the first
+    if (this.bg2.y >= this.bgScaledHeight) {
+      this.bg2.y = this.bg.y - this.bgScaledHeight;
     }
   },
 
