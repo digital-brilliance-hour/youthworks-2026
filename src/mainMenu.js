@@ -22,12 +22,25 @@ BasicGame.MainMenu.prototype = {
     // Second copy stacked directly above the first for seamless looping
     this.bg2 = this.add.image(0, -this.bgScaledHeight, 'menuBack');
     this.bg2.scale.setTo(scaleFactor, scaleFactor);
-    // this.add.sprite(0, 0, 'titlepage');
+    var titleSprite = this.add.sprite(this.game.width / 2, -50, 'titleOption1');
+    titleSprite.anchor.setTo(0.5, 0);
+    titleSprite.scale.setTo(0.75, 0.75);
+    titleSprite.texture.baseTexture.scaleMode = PIXI.scaleModes.NEAREST;
 
-    this.loadingText = this.add.text(this.game.width / 2, this.game.height / 2 + 80, "Press Z or tap/click game to start", { font: "20px monospace", fill: "#fff" });
+    this.loadingText = this.add.text(this.game.width / 2, this.game.height / 2 + 140, "Press Z or tap/click game to start", { font: "20px monospace", fill: "#fff" });
     this.loadingText.anchor.setTo(0.5, 0.5);
-    this.add.text(this.game.width / 2, this.game.height - 90, "image assets Copyright (c) 2002 Ari Feldman", { font: "12px monospace", fill: "#fff", align: "center"}).anchor.setTo(0.5, 0.5);
-    this.add.text(this.game.width / 2, this.game.height - 75, "sound assets Copyright (c) 2012 - 2013 Devin Watson", { font: "12px monospace", fill: "#fff", align: "center"}).anchor.setTo(0.5, 0.5);
+    this.loadingText.setShadow(3, 3, 'rgba(0,0,0,1)', 0);
+    this.add.tween(this.loadingText).to({ alpha: 0.3 }, 800, Phaser.Easing.Sinusoidal.InOut, true, 0, -1, true);
+    //this.add.text(this.game.width / 2, this.game.height - 90, "image assets Copyright (c) 2002 Ari Feldman", { font: "12px monospace", fill: "#fff", align: "center"}).anchor.setTo(0.5, 0.5);
+    this.add.text(this.game.width / 2, this.game.height - 75, "Developed by Hexagon Games", { font: "12px monospace", fill: "#fff", align: "center"}).anchor.setTo(0.5, 0.5);
+
+    // Flash white on load to draw attention to the screen
+    var flash = this.add.graphics(0, 0);
+    flash.beginFill(0xFFFFFF);
+    flash.drawRect(0, 0, this.game.width, this.game.height);
+    flash.endFill();
+    var flashTween = this.add.tween(flash).to({ alpha: 0 }, 400, Phaser.Easing.Cubic.Out, true);
+    flashTween.onComplete.addOnce(function () { flash.destroy(); }, this);
 
   },
 
