@@ -83,7 +83,12 @@ BasicGame.Game2.prototype = {
           var anim = puCfg.animations[i];
           p.animations.add(anim.name, anim.frames, anim.fps, anim.loop);
         }
-      });
+        this.applyScaleAndHitbox(p, puCfg);
+      }, this);
+    } else if (puCfg.scale || puCfg.hitbox) {
+      this.powerUpPool.forEach(function (p) {
+        this.applyScaleAndHitbox(p, puCfg);
+      }, this);
     }
 	this.lives = this.add.group(); 
 	// calculate location of first life icon 
@@ -155,7 +160,15 @@ BasicGame.Game2.prototype = {
 },
 
   processPlayerInput: function () {
-    if (!this.playerControl) { return; }
+    // Always check for quit input, even when player is dead
+    if (this.input.keyboard.isDown(Phaser.Keyboard.Z) || this.input.activePointer.isDown) {
+      if (this.returnText && this.returnText.exists) {
+        this.quitGame();
+        return;
+      }
+    }
+
+    if (!this.playerControl || !this.player.alive || !this.player.body) { return; }
     this.player.body.velocity.x = 0; 
     this.player.body.velocity.y = 0; 
 
@@ -178,11 +191,7 @@ BasicGame.Game2.prototype = {
 
     if (this.input.keyboard.isDown(Phaser.Keyboard.Z) || 
     this.input.activePointer.isDown) { 
-      if (this.returnText && this.returnText.exists) {         
-		this.quitGame();       
-		} else {         
-			this.fire();       
-		}   
+      this.fire();
     } 
 
     // Lean animations based on horizontal movement
@@ -499,6 +508,20 @@ BasicGame.Game2.prototype = {
     this.bgType = cfg.type;
   },  
 
+  applyScaleAndHitbox: function (sprite, cfg) {
+    if (cfg.scale) {
+      var sx = (typeof cfg.scale === 'object') ? cfg.scale.x : cfg.scale;
+      var sy = (typeof cfg.scale === 'object') ? cfg.scale.y : cfg.scale;
+      sprite.scale.setTo(sx, sy);
+    }
+    if (cfg.crisp) {
+      sprite.texture.baseTexture.scaleMode = PIXI.scaleModes.NEAREST;
+    }
+    if (cfg.hitbox) {
+      sprite.body.setSize(cfg.hitbox.width, cfg.hitbox.height, cfg.hitbox.offsetX || 0, cfg.hitbox.offsetY || 0);
+    }
+  },
+
   setupPlayer: function () {  
     var cfg = this.config.player;
     this.player = this.add.sprite(this.game.width / 2, this.game.height - 50, cfg.key);  
@@ -512,10 +535,8 @@ BasicGame.Game2.prototype = {
     }
     this.physics.enable(this.player, Phaser.Physics.ARCADE);  
     this.player.speed = BasicGame.PLAYER_SPEED;  
-    this.player.body.collideWorldBounds = true;  
-    if (cfg.hitbox) {
-      this.player.body.setSize(cfg.hitbox.width, cfg.hitbox.height, cfg.hitbox.offsetX, cfg.hitbox.offsetY);
-    }
+    this.player.body.collideWorldBounds = true;
+    this.applyScaleAndHitbox(this.player, cfg);
     this.weaponLevel = this.game.weaponLevel || 0;
   },  
 
@@ -543,6 +564,7 @@ BasicGame.Game2.prototype = {
           e.play(eCfg.defaultAnimation);
         }, this);
       }
+      this.applyScaleAndHitbox(enemy, eCfg);
     }, this); 
 
     this.nextEnemyAt = 0; 
@@ -570,6 +592,7 @@ BasicGame.Game2.prototype = {
           e.play(sCfg.defaultAnimation);
         }, this);
       }
+      this.applyScaleAndHitbox(enemy, sCfg);
 	}, this);      
     // start spawning 5 seconds into the game     
     this.nextShooterAt = this.time.now + Phaser.Timer.SECOND * 5;     
@@ -599,6 +622,7 @@ BasicGame.Game2.prototype = {
           e.play(bCfg.defaultAnimation);
         }, this);
       }
+      this.applyScaleAndHitbox(enemy, bCfg);
     }, this);      
     this.boss = this.bossPool.getTop();     
     this.bossApproaching = false;
@@ -621,7 +645,12 @@ BasicGame.Game2.prototype = {
           var anim = ebCfg.animations[i];
           b.animations.add(anim.name, anim.frames, anim.fps, anim.loop);
         }
-      });
+        this.applyScaleAndHitbox(b, ebCfg);
+      }, this);
+    } else if (ebCfg.scale || ebCfg.hitbox) {
+      this.enemyBulletPool.forEach(function (b) {
+        this.applyScaleAndHitbox(b, ebCfg);
+      }, this);
     }
 
     var bCfg = this.config.bullet;
@@ -648,7 +677,12 @@ BasicGame.Game2.prototype = {
           var anim = bCfg.animations[i];
           b.animations.add(anim.name, anim.frames, anim.fps, anim.loop);
         }
-      });
+        this.applyScaleAndHitbox(b, bCfg);
+      }, this);
+    } else if (bCfg.scale || bCfg.hitbox) {
+      this.bulletPool.forEach(function (b) {
+        this.applyScaleAndHitbox(b, bCfg);
+      }, this);
     }
 
     this.nextShotAt = 0; 
