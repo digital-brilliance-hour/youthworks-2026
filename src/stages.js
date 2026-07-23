@@ -53,7 +53,7 @@ BasicGame.STAGE1_CONFIG = {
   bullet: {
     key: 'playerBullet',
     animated: false, 
-    scale: 0.50,
+    scale: 0.2,
     crisp: true
   },
 
