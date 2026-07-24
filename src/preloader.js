@@ -28,8 +28,8 @@ BasicGame.Preloader.prototype = {
     this.load.image('sea', 'assets/sea.png');
     this.load.image('sand', 'assets/sand.png');
     this.load.image('bullet', 'assets/bullet.png');
-      this.load.spritesheet('enemy1Bullet', 'assets/enemy1Bullet.png', 13,13);
-      this.load.spritesheet('enemyBullet', 'assets/enemy1Bullet.png', 13,13);
+    this.load.spritesheet('enemy1Bullet', 'assets/enemy1Bullet.png', 13, 13);
+    this.load.spritesheet('enemyBullet', 'assets/enemy1Bullet.png', 13, 13);
     this.load.image('powerup1', 'assets/powerup1.png');
     this.load.image('enemy1', 'assets/enemy1-fighter.png');
     this.load.spritesheet('enemy2', 'assets/enemy1-sheet24x31.png', 24, 31);
@@ -40,10 +40,10 @@ BasicGame.Preloader.prototype = {
     this.load.spritesheet('explosion', 'assets/explosion.png', 32, 32);
     this.load.spritesheet('ship-P', 'assets/ship-P.png', 29, 32);
     this.load.spritesheet('player', 'assets/player.png', 64, 64);
-    this.load.spritesheet('explosion3' , 'assets/explosion3-sheet62x64.png' , 62, 64);
-    this.load.spritesheet('explosion2' , 'assets/explosion2-sheet39x40.png', 39, 40);
-    this.load.spritesheet('shipexplosion' , 'assets/shipexplosion-sheet49x42.png' , 49 , 42);
-    this.load.spritesheet('explosion1' , 'assets/explosion1-sheet32x32.png' , 32 , 32);
+    this.load.spritesheet('explosion3', 'assets/explosion3-sheet62x64.png', 62, 64);
+    this.load.spritesheet('explosion2', 'assets/explosion2-sheet39x40.png', 39, 40);
+    this.load.spritesheet('shipexplosion', 'assets/shipexplosion-sheet49x42.png', 49, 42);
+    this.load.spritesheet('explosion1', 'assets/explosion1-sheet32x32.png', 32, 32);
     this.load.audio('explosion', ['assets/explosion.ogg', 'assets/explosion.wav']);
     this.load.audio('playerExplosion', ['assets/player-explosion.ogg', 'assets/player-explsion.wav']);
     this.load.audio('enemyFire', ['assets/enemy-fire.ogg', 'assets/enemy-fire.wav']);
@@ -54,11 +54,11 @@ BasicGame.Preloader.prototype = {
     this.load.audio('bossMusic', ['assets/bgm/bossmusic.ogg']);
     this.load.audio('gameOverMusic', ['assets/bgm/gameovermusic.mp3']);
     //  + lots of other required assets here
- this.load.image('playerBullet', 'assets/playerBullet.png');
-  
-    this.load.spritesheet('boss1Bullet','assets/boss1Bullet.png', 13,13);
-    this.load.image('bg1','assets/stage1-back.png');
-    this.load.image('bg2','assets/stage2-back.png');
+    this.load.image('playerBullet', 'assets/playerBullet.png');
+
+    this.load.spritesheet('boss1Bullet', 'assets/boss1Bullet.png', 13, 13);
+    this.load.image('bg1', 'assets/stage1-back.png');
+    this.load.image('bg2', 'assets/stage2-back.png');
     this.load.image('menuBack', 'assets/menuBack.png');
     this.load.image('titleOption1', 'assets/titleOption1.png');
     this.load.image('titleOption2', 'assets/titleOption2.png');
@@ -79,14 +79,14 @@ BasicGame.Preloader.prototype = {
     //  You can jump right into the menu if you want and still play the music, but you'll have a few
     //  seconds of delay while the mp3 decodes - so if you need your music to be in-sync with your menu
     //  it's best to wait for it to decode here first, then carry on.
-    
+
     //  If you don't have any music in your game then put the game.state.start line into the create function and delete
     //  the update function completely.
-    
+
     //if (this.cache.isSoundDecoded('titleMusic') && this.ready == false)
     //{
     //  this.ready = true;
-      this.state.start('MainMenu');
+    this.state.start('MainMenu');
     //}
 
   }
