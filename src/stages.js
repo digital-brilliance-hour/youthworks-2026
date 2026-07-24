@@ -54,7 +54,7 @@ BasicGame.STAGE1_CONFIG = {
     scale: 2.0,
     crisp: true,
     animated: false,
-    health: 50
+    health: 500
   },
 
   // Player Bullet Config
