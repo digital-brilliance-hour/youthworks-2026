@@ -118,9 +118,9 @@ BasicGame.Game.prototype = {
       var enemy = this.enemyPool.getFirstExists(false);
       // spawn at a random location top of the screen 
       enemy.reset(
-        this.rnd.integerInRange(20, this.game.width - 20), 0
+        this.rnd.integerInRange(20, this.game.width - 20), 0,
+        eHealth
       );
-      enemy.health = eHealth;
       enemy.maxHealth = eHealth;
       // also randomize the speed 
       enemy.body.velocity.y = this.rnd.integerInRange(
@@ -135,8 +135,10 @@ BasicGame.Game.prototype = {
       this.nextShooterAt = this.time.now + this.shooterDelay;
       var shooter = this.shooterPool.getFirstExists(false);
       // spawn at a random location at the top         
-      shooter.reset(this.rnd.integerInRange(20, this.game.width - 20), 0);
-      shooter.health = sHealth;
+      shooter.reset(
+        this.rnd.integerInRange(20, this.game.width - 20), 0,
+        sHealth
+      );
       shooter.maxHealth = sHealth;
       // choose a random target location at the bottom       
       var target = this.rnd.integerInRange(20, this.game.width - 20);
@@ -395,7 +397,8 @@ BasicGame.Game.prototype = {
 
   damageEnemy: function (enemy, damage) {
     enemy.damage(damage);
-    console.log(damage);
+    var currentHP = enemy.health > 0 ? enemy.health : 0;
+    console.log("[DAMAGE] " + enemy.key + " hit! Damage: " + damage + " | HP: " + currentHP + "/" + enemy.maxHealth);
 
     if (enemy.alive) {
       if (enemy.animations.getAnimation('hit')) {
