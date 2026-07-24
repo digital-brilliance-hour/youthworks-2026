@@ -278,6 +278,10 @@ BasicGame.Game.prototype = {
         this.bg.y = -(this.bgScaledHeight - this.game.height);
       } else {
         this.bg.y = 0;
+        // Trigger boss spawn when scroll reaches the end
+        if (this.config.bossSpawnTrigger === 'scrollEnd' && this.bossPool.countDead() == 1) {
+          this.spawnBoss();
+        }
       }
     }
   },
@@ -369,6 +373,23 @@ BasicGame.Game.prototype = {
   },
 
   damageEnemy: function (enemy, damage) {
+    // If this hit would kill the boss, start the death sequence BEFORE killing it
+    // so the boss sprite stays alive and on-screen during Phase 1 explosions
+    if (enemy.key === this.config.boss.key && enemy.health <= damage) {
+      this.explode(enemy);
+      this.spawnPowerUp(enemy);
+      this.addToScore(enemy.reward);
+      this.enemyPool.destroy();
+      this.shooterPool.destroy();
+      this.bossRingBulletPool.destroy();
+      this.enemyBulletPool.destroy();
+      if (this.bossRingShotTimer) {
+        this.time.events.remove(this.bossRingShotTimer);
+      }
+      this.bossDeathSequence();
+      return;
+    }
+
     enemy.damage(damage);
     if (enemy.alive) {
       if (enemy.animations.getAnimation('hit')) {
@@ -380,24 +401,82 @@ BasicGame.Game.prototype = {
       this.explode(enemy);
       this.spawnPowerUp(enemy);
       this.addToScore(enemy.reward);
-      // We check the sprite key (e.g. 'greenEnemy') to see if the sprite is a boss       
-      // For full games, it would be better to set flags on the sprites themselves       
-      if (enemy.key === this.config.boss.key) {
-        this.enemyPool.destroy();
-        this.shooterPool.destroy();
-        this.bossPool.destroy();
-        this.enemyBulletPool.destroy();
-        this.bossRingBulletPool.destroy();
-        if (this.bossRingShotTimer) {
-          this.time.events.remove(this.bossRingShotTimer);
-        }
-        if (this.config.nextState) {
-          this.stageComplete();
-        } else {
-          this.displayEnd(true);
-        }
-      }
     }
+  },
+
+  bossDeathSequence: function () {
+    var self = this;
+    var boss = this.boss;
+    var exCfg = this.config.explosion;
+    var bossExCfg = this.config.bossExplosion || this.config.explosion;
+
+    // Freeze the boss in place for the death sequence
+    boss.body.velocity.x = 0;
+    boss.body.velocity.y = 0;
+    boss.body.enable = false;
+
+    var tickCount = 0;
+    var totalTicks = 14;
+
+    // Phase 1: rapid random explosions across boss surface (boss still alive and visible)
+    var deathTimer = this.time.events.loop(200, function () {
+      tickCount++;
+
+      if (self.explosionPool.countDead() > 0) {
+        var halfW = boss.width / 2;
+        var halfH = boss.height / 2;
+        var ex = self.explosionPool.getFirstExists(false);
+        var rx = boss.x + self.rnd.integerInRange(-halfW, halfW);
+        var ry = boss.y + self.rnd.integerInRange(-halfH, halfH);
+        ex.reset(rx, ry);
+        var randScale = self.rnd.realInRange(0.5, 1.8);
+        ex.scale.setTo(randScale, randScale);
+        if (exCfg.animated) {
+          var anim = exCfg.animations[0];
+          ex.play(anim.name, anim.fps, false, exCfg.destroyOnComplete || false);
+        }
+        self.explosionSFX.play();
+      }
+
+      if (tickCount >= totalTicks) {
+        self.time.events.remove(deathTimer);
+
+        // Phase 2: final large explosion — capture position just before killing
+        var finalX = boss.x;
+        var finalY = boss.y;
+        boss.kill();
+        self.bossPool.destroy();
+
+        var finalPool = self.bossExplosionPool || self.explosionPool;
+        if (finalPool.countDead() > 0) {
+          var finalEx = finalPool.getFirstExists(false);
+          finalEx.reset(finalX, finalY);
+          finalEx.scale.setTo(3, 3);
+          if (bossExCfg.animated) {
+            var finalAnim = bossExCfg.animations[0];
+            finalEx.play(finalAnim.name, finalAnim.fps, false, bossExCfg.destroyOnComplete || false);
+          }
+          self.explosionSFX.play();
+        }
+
+        // Phase 3: white flash that slowly fades back to transparent
+        var flash = self.add.graphics(0, 0);
+        flash.beginFill(0xFFFFFF);
+        flash.drawRect(0, 0, self.game.width, self.game.height);
+        flash.endFill();
+        var flashTween = self.add.tween(flash).to(
+          { alpha: 0 }, 2000, Phaser.Easing.Cubic.Out, true, 300
+        );
+        flashTween.onComplete.addOnce(function () {
+          flash.destroy();
+          if (self.config.nextState) {
+            self.stageComplete();
+          } else {
+            self.displayEnd(true);
+          }
+        }, self);
+      }
+    }, this);
   },
 
   spawnPowerUp: function (enemy) {
@@ -417,8 +496,9 @@ BasicGame.Game.prototype = {
   addToScore: function (score) {
     this.score += score;
     this.scoreText.text = this.score;
-    // this approach prevents the boss from spawning again upon winning     
-    if (this.score >= 20 && this.bossPool.countDead() == 1) {
+    // Score-based boss spawn (only when bossSpawnTrigger is 'score' or unset)
+    if ((!this.config.bossSpawnTrigger || this.config.bossSpawnTrigger === 'score') &&
+        this.score >= 20000 && this.bossPool.countDead() == 1) {
       this.spawnBoss();
     }
   },
@@ -518,7 +598,6 @@ BasicGame.Game.prototype = {
   },
 
   render: function () {
-<<<<<<< HEAD
     if (!this.config.debug) { return; }
     this.game.debug.body(this.player);
     this.game.debug.body(this.boss);
@@ -527,10 +606,6 @@ BasicGame.Game.prototype = {
     this.bulletPool.forEachAlive(function (b) { this.game.debug.body(b); }, this);
     this.enemyBulletPool.forEachAlive(function (b) { this.game.debug.body(b); }, this);
     this.powerUpPool.forEachAlive(function (p) { this.game.debug.body(p); }, this);
-=======
-    this.game.debug.body(this.boss);
-    //this.game.debug.body(this.enemy);
->>>>>>> origin/main
   },
 
   //  

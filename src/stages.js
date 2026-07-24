@@ -144,8 +144,11 @@ BasicGame.STAGE1_CONFIG = {
   // Next stage
   nextState: null,
 
+  // Boss spawn trigger: 'scrollEnd' or 'score'
+  bossSpawnTrigger: 'scrollEnd',
+
   // Debug
-  debug: true
+  debug: false
 };
 
 BasicGame.STAGE2_CONFIG = {
@@ -243,5 +246,8 @@ BasicGame.STAGE2_CONFIG = {
   gameOverMusic: 'gameOverMusic',
 
   // Next stage
-  nextState: null  // final stage — win screen on boss defeat
+  nextState: null,  // final stage — win screen on boss defeat
+
+  // Boss spawn trigger: 'scrollEnd' or 'score'
+  bossSpawnTrigger: 'score'
 };
