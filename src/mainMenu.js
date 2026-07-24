@@ -17,6 +17,7 @@ BasicGame.MainMenu.prototype = {
     var scaleFactor = this.game.width / this.bg.texture.width;
     this.bg.scale.setTo(scaleFactor, scaleFactor);
     this.bgScaledHeight = this.bg.texture.height * scaleFactor;
+    this.bg.texture.baseTexture.scaleMode = PIXI.scaleModes.NEAREST;
     this.bgScrollSpeed = 30; // pixels per second — adjust to taste
 
     // Second copy stacked directly above the first for seamless looping
@@ -34,13 +35,20 @@ BasicGame.MainMenu.prototype = {
     //this.add.text(this.game.width / 2, this.game.height - 90, "image assets Copyright (c) 2002 Ari Feldman", { font: "12px monospace", fill: "#fff", align: "center"}).anchor.setTo(0.5, 0.5);
     this.add.text(this.game.width / 2, this.game.height - 75, "Developed by Hexagon Games", { font: "12px monospace", fill: "#fff", align: "center"}).anchor.setTo(0.5, 0.5);
 
+    // Create music upfront so it's ready regardless of tween timing
+    this.music = this.add.audio('titleMusic', 0.55, true);
+
     // Flash white on load to draw attention to the screen
+    var self = this;
     var flash = this.add.graphics(0, 0);
     flash.beginFill(0xFFFFFF);
     flash.drawRect(0, 0, this.game.width, this.game.height);
     flash.endFill();
     var flashTween = this.add.tween(flash).to({ alpha: 0 }, 400, Phaser.Easing.Cubic.Out, true);
-    flashTween.onComplete.addOnce(function () { flash.destroy(); }, this);
+    flashTween.onComplete.addOnce(function () {
+      flash.destroy();
+      self.music.play();
+    }, this);
 
   },
 
@@ -65,9 +73,7 @@ BasicGame.MainMenu.prototype = {
   },
 
   startGame: function (pointer) {
-
-    //  Ok, the Play Button has been clicked or touched, so let's stop the music (otherwise it'll carry on playing)
-    // this.music.stop();
+    if (this.music) { this.music.stop(); }
 
     //  Initialize persistent game state
     this.game.score = 0;
