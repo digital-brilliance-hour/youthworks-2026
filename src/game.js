@@ -444,11 +444,25 @@ BasicGame.Game.prototype = {
   },
 
   explode: function (sprite) {
-    if (this.explosionPool.countDead() === 0) {
+    // Determine which explosion pool and config to use based on sprite key
+    var exCfg = this.config.explosion;
+    var pool = this.explosionPool;
+
+    if (sprite.key === this.config.boss.key && this.bossExplosionPool) {
+      exCfg = this.config.bossExplosion;
+      pool = this.bossExplosionPool;
+    } else if (sprite.key === this.config.enemy.key && this.enemy2ExplosionPool) {
+      exCfg = this.config.enemy2Explosion;
+      pool = this.enemy2ExplosionPool;
+    } else if (sprite.key === this.config.shooter.key && this.enemy1ExplosionPool) {
+      exCfg = this.config.enemy1Explosion;
+      pool = this.enemy1ExplosionPool;
+    }
+
+    if (pool.countDead() === 0) {
       return;
     }
-    var exCfg = this.config.explosion;
-    var explosion = this.explosionPool.getFirstExists(false);
+    var explosion = pool.getFirstExists(false);
     explosion.reset(sprite.x, sprite.y);
     if (exCfg.animated) {
       var anim = exCfg.animations[0];
@@ -504,6 +518,7 @@ BasicGame.Game.prototype = {
   },
 
   render: function () {
+<<<<<<< HEAD
     if (!this.config.debug) { return; }
     this.game.debug.body(this.player);
     this.game.debug.body(this.boss);
@@ -512,6 +527,10 @@ BasicGame.Game.prototype = {
     this.bulletPool.forEachAlive(function (b) { this.game.debug.body(b); }, this);
     this.enemyBulletPool.forEachAlive(function (b) { this.game.debug.body(b); }, this);
     this.powerUpPool.forEachAlive(function (p) { this.game.debug.body(p); }, this);
+=======
+    this.game.debug.body(this.boss);
+    //this.game.debug.body(this.enemy);
+>>>>>>> origin/main
   },
 
   //  
@@ -775,22 +794,39 @@ BasicGame.Game.prototype = {
     this.enemyFireSFX.play();
   },
 
-  setupExplosions: function () {
-    var exCfg = this.config.explosion;
-    this.explosionPool = this.add.group();
-    this.explosionPool.enableBody = true;
-    this.explosionPool.physicsBodyType = Phaser.Physics.ARCADE;
-    this.explosionPool.createMultiple(100, exCfg.key);
-    this.explosionPool.setAll('anchor.x', 0.5);
-    this.explosionPool.setAll('anchor.y', 0.5);
+  // Helper: creates an explosion pool from any explosion config object
+  createExplosionPool: function (exCfg, count) {
+    var pool = this.add.group();
+    pool.enableBody = true;
+    pool.physicsBodyType = Phaser.Physics.ARCADE;
+    pool.createMultiple(count, exCfg.key);
+    pool.setAll('anchor.x', 0.5);
+    pool.setAll('anchor.y', 0.5);
     if (exCfg.animated) {
-      this.explosionPool.forEach(function (explosion) {
+      pool.forEach(function (explosion) {
         for (var i = 0; i < exCfg.animations.length; i++) {
           var anim = exCfg.animations[i];
           explosion.animations.add(anim.name, anim.frames, anim.fps, anim.loop);
         }
       });
     }
+    return pool;
+  },
+
+  setupExplosions: function () {
+    // Generic / player explosion pool (always exists)
+    this.explosionPool = this.createExplosionPool(this.config.explosion, 100);
+
+    // Per-enemy-type explosion pools (only created when the config exists)
+    this.enemy1ExplosionPool = this.config.enemy1Explosion
+      ? this.createExplosionPool(this.config.enemy1Explosion, 20)
+      : null;
+    this.enemy2ExplosionPool = this.config.enemy2Explosion
+      ? this.createExplosionPool(this.config.enemy2Explosion, 20)
+      : null;
+    this.bossExplosionPool = this.config.bossExplosion
+      ? this.createExplosionPool(this.config.bossExplosion, 5)
+      : null;
   },
 
   setupText: function () {
@@ -888,6 +924,9 @@ BasicGame.Game.prototype = {
     this.enemyPool.destroy();
     this.bulletPool.destroy();
     this.explosionPool.destroy();
+    if (this.enemy1ExplosionPool) { this.enemy1ExplosionPool.destroy(); }
+    if (this.enemy2ExplosionPool) { this.enemy2ExplosionPool.destroy(); }
+    if (this.bossExplosionPool) { this.bossExplosionPool.destroy(); }
     this.bossRingBulletPool.destroy();
     if (this.bossRingShotTimer) {
       this.time.events.remove(this.bossRingShotTimer);
