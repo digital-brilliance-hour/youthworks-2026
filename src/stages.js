@@ -4,7 +4,8 @@ BasicGame.STAGE1_CONFIG = {
     key: 'bg1',
     type: 'image',
     scrollSpeed: 300,
-    loop: false
+    loop: false,
+    crisp: true
   },
 
   // Player
@@ -53,7 +54,7 @@ BasicGame.STAGE1_CONFIG = {
     scale: 2.0,
     crisp: true,
     animated: false,
-    health: 500
+    health: 50
   },
 
   // Player Bullet Config
@@ -150,17 +151,63 @@ BasicGame.STAGE1_CONFIG = {
   },
 
   // Audio
-  explosionSFX: 'explosion',
-  playerExplosionSFX: 'playerExplosion',
-  enemyFireSFX: 'enemyFire',
-  playerFireSFX: 'playerFire',
-  powerUpSFX: 'powerUp',
-  stageMusic: 'stageMusic',
-  bossMusic: 'bossMusic',
-  gameOverMusic: 'gameOverMusic',
+  explosionSFX: {
+    key: 'explosion',
+    volume: 0.2,
+    loop: false
+  },
+  playerExplosionSFX: {
+    key: 'playerExplosion',
+    volume: 0.2,
+    loop: false
+  },
+  enemyFireSFX: {
+    key: 'enemyFire',
+    volume: 0.4,
+    loop: false
+  },
+  playerFireSFX: {
+    key: 'playerFire',
+    volume: 0.2,
+    loop: false
+  },
+  powerUpSFX: {
+    key: 'powerUp',
+    volume: 0.4,
+    loop: false
+  },
+  stageMusic: {
+    key: 'stageMusic',
+    volume: 0.55,
+    loop: true
+  },
+  bossMusic: {
+    key: 'bossMusic',
+    volume: 0.55,
+    play: 'intro',        // which marker to start with
+    markers: [
+        {
+        name: 'intro',
+        start: 0,         // seconds from start of file
+        duration: 24,      // how long this segment plays
+        loop: false       // plays once then stops
+        },
+        {
+        name: 'loop',
+        start: 24,         // picks up at 24 seconds
+        duration: 48.5,     // plays for 49 seconds
+        loop: true        // loops back to second 24 when it ends
+        }
+    ]
+  },
+  gameOverMusic: {
+    key: 'gameOverMusic',
+    volume: 0.8,
+    loop: false
+  },
 
   // Next stage
-  nextState: null,
+  nextState: 'ThanksForPlaying',
 
   // Boss spawn trigger: 'scrollEnd' or 'score'
   bossSpawnTrigger: 'scrollEnd',
@@ -173,7 +220,8 @@ BasicGame.STAGE2_CONFIG = {
   // Background
   background: {
     key: 'sand',
-    type: 'tile'
+    type: 'tile',
+    crisp: true
   },
 
   // Player
@@ -278,14 +326,46 @@ BasicGame.STAGE2_CONFIG = {
   },
 
   // Audio
-  explosionSFX: 'explosion',
-  playerExplosionSFX: 'playerExplosion',
-  enemyFireSFX: 'enemyFire',
-  playerFireSFX: 'playerFire',
-  powerUpSFX: 'powerUp',
-  stageMusic: 'stageMusic',
-  bossMusic: 'bossMusic',
-  gameOverMusic: 'gameOverMusic',
+  explosionSFX: {
+    key: 'explosion',
+    volume: 0.2,
+    loop: false
+  },
+  playerExplosionSFX: {
+    key: 'playerExplosion',
+    volume: 0.2,
+    loop: false
+  },
+  enemyFireSFX: {
+    key: 'enemyFire',
+    volume: 0.4,
+    loop: false
+  },
+  playerFireSFX: {
+    key: 'playerFire',
+    volume: 0.2,
+    loop: false
+  },
+  powerUpSFX: {
+    key: 'powerUp',
+    volume: 0.4,
+    loop: false
+  },
+  stageMusic: {
+    key: 'stageMusic',
+    volume: 0.55,
+    loop: true
+  },
+  bossMusic: {
+    key: 'bossMusic',
+    volume: 0.55,
+    loop: true
+  },
+  gameOverMusic: {
+    key: 'gameOverMusic',
+    volume: 0.8,
+    loop: false
+  },
 
   // Next stage
   nextState: null,  // final stage — win screen on boss defeat

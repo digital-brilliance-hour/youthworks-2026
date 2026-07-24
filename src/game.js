@@ -163,16 +163,68 @@ BasicGame.Game.prototype = {
 
   },
 
+  // Creates an audio object from a config that is either a plain string key
+  // or a full object with key, volume, loop, markers, and play properties.
+  setupSound: function (cfg, defaultVolume, defaultLoop) {
+    if (typeof cfg === 'string') {
+      return this.add.audio(cfg, defaultVolume, defaultLoop);
+    }
+    var volume = (cfg.volume !== undefined) ? cfg.volume : defaultVolume;
+    var sound = this.add.audio(cfg.key, volume, false);
+    if (cfg.markers && cfg.markers.length > 0) {
+      for (var i = 0; i < cfg.markers.length; i++) {
+        var m = cfg.markers[i];
+        sound.addMarker(m.name, m.start, m.duration, volume, m.loop || false);
+      }
+    } else if (cfg.loop) {
+      sound.loop = true;
+    }
+    return sound;
+  },
+
+  // Plays a sound using its config's 'play' marker name, or plays from the start.
+  playSound: function (sound, cfg) {
+    if (typeof cfg === 'object' && cfg.play) {
+      sound.play(cfg.play);
+
+      if (cfg.markers) {
+        // Find the marker flagged as the loop segment
+        var loopMarker = null;
+        for (var i = 0; i < cfg.markers.length; i++) {
+          if (cfg.markers[i].loop) { loopMarker = cfg.markers[i].name; break; }
+        }
+
+        if (loopMarker) {
+          // Store the loop marker on the sound object so onStop can access it
+          sound._autoLoop = loopMarker;
+          sound.onStop.add(function () {
+            if (sound._autoLoop) {
+              sound.play(sound._autoLoop);
+            }
+          }, this);
+        }
+      }
+    } else {
+      sound.play();
+    }
+  },
+
+  // Stops a sound and disables any auto-loop so onStop doesn't re-trigger it
+  stopSound: function (sound) {
+    sound._autoLoop = null;
+    sound.stop();
+  },
+
   setupAudio: function () {
-    this.explosionSFX = this.add.audio(this.config.explosionSFX, 0.2, false);
-    this.playerExplosionSFX = this.add.audio(this.config.playerExplosionSFX, 0.2, false);
-    this.enemyFireSFX = this.add.audio(this.config.enemyFireSFX, 0.4, false);
-    this.playerFireSFX = this.add.audio(this.config.playerFireSFX, 0.2, false);
-    this.powerUpSFX = this.add.audio(this.config.powerUpSFX, 0.4, false);
-    this.music = this.add.audio(this.config.stageMusic, 0.55, true);
-    this.bossMusic = this.add.audio(this.config.bossMusic, 0.55, true);
-    this.gameOverMusic = this.add.audio(this.config.gameOverMusic);
-    this.music.play();
+    this.explosionSFX       = this.setupSound(this.config.explosionSFX,       0.2,  false);
+    this.playerExplosionSFX = this.setupSound(this.config.playerExplosionSFX,  0.2,  false);
+    this.enemyFireSFX       = this.setupSound(this.config.enemyFireSFX,        0.4,  false);
+    this.playerFireSFX      = this.setupSound(this.config.playerFireSFX,       0.2,  false);
+    this.powerUpSFX         = this.setupSound(this.config.powerUpSFX,          0.4,  false);
+    this.music              = this.setupSound(this.config.stageMusic,          0.55, true);
+    this.bossMusic          = this.setupSound(this.config.bossMusic,           0.55, true);
+    this.gameOverMusic      = this.setupSound(this.config.gameOverMusic,       0.8,  false);
+    this.playSound(this.music, this.config.stageMusic);
   },
 
   processPlayerInput: function () {
@@ -546,8 +598,8 @@ BasicGame.Game.prototype = {
     if (bCfg.animated) {
       this.boss.play(bCfg.defaultAnimation);
     }
-    this.music.stop();
-    this.bossMusic.play();
+    this.stopSound(this.music);
+    this.playSound(this.bossMusic, this.config.bossMusic);
 
     // Start the ring shot repeating timer
     this.bossRingShotTimer = this.time.events.loop(
@@ -680,6 +732,9 @@ BasicGame.Game.prototype = {
       this.bg.y = -(this.bgScaledHeight - this.game.height);
       this.bgScrollSpeed = speed;
       this.bgLoop = cfg.loop || false;
+    }
+    if (cfg.crisp) {
+      this.bg.texture.baseTexture.scaleMode = PIXI.scaleModes.NEAREST;
     }
     this.bgType = cfg.type;
   },
@@ -1034,7 +1089,7 @@ BasicGame.Game.prototype = {
   stageComplete: function () {
     // Disable player input
     this.playerControl = false;
-    this.bossMusic.stop();
+    this.stopSound(this.bossMusic);
 
     // Back down slightly then take off
     this.player.body.velocity.x = 0;
@@ -1057,7 +1112,7 @@ BasicGame.Game.prototype = {
       fade.alpha = 0;
       var fadeTween = this.add.tween(fade).to({ alpha: 1 }, 1000, Phaser.Easing.Linear.None, true);
       fadeTween.onComplete.addOnce(function () {
-        this.music.stop();
+        this.stopSound(this.music);
         this.game.score = this.score;
         this.game.lives = this.lives.countLiving();
         this.game.weaponLevel = this.weaponLevel;
@@ -1087,8 +1142,8 @@ BasicGame.Game.prototype = {
     if (this.endText && this.endText.exists) {
       return;
     }
-    this.bossMusic.stop();
-    this.music.stop();
+    this.stopSound(this.bossMusic);
+    this.stopSound(this.music);
     this.gameOverMusic.play();
     var msg = win ? 'You Win!!!' : 'Game Over!';
     this.endText = this.add.text(
