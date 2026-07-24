@@ -117,7 +117,7 @@ var BasicGame = {
 
   // Health & damage
   ENEMY_HEALTH: 2,
-  BOSS_HEALTH: 500,
+  BOSS_HEALTH: 2,
   BULLET_DAMAGE: 1,
 
   // Rewards & drops
