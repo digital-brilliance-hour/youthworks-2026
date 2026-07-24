@@ -605,7 +605,7 @@ BasicGame.Game.prototype = {
     this.player.speed = BasicGame.PLAYER_SPEED;
     this.player.body.collideWorldBounds = true;
     this.applyScaleAndHitbox(this.player, cfg);
-    var pHealth = this.getHealth(cfg, BasicGame.PLAYER_HEALTH || 1);
+    var pHealth = this.getHealth(cfg, BasicGame.PLAYER_HEALTH);
     this.player.health = pHealth;
     this.player.maxHealth = pHealth;
     this.weaponLevel = this.game.weaponLevel || 0;
